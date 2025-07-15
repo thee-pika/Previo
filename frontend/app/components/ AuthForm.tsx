@@ -98,12 +98,13 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onToggle }) => {
           router.push('/login');
         }, 1000);
       }
-      else {
-        toast.error(res.data.message);
-      }
-    } catch (error) {
+      // else {
+      //   toast.error(res.data.message);
+      // }
+    } catch (error: any) {
       console.log("error", error);
-      toast.error("Something went wrong");
+      console.log("error.response.data.message", error.response.data.message);
+      toast.error(error.response.data.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -239,9 +240,17 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onToggle }) => {
               type="submit"
               className="w-full h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-[1.02]"
             >
-              {isSignUp ? 'Create Account' : 'Sign In'}
-            </Button>
 
+              {
+                loading
+                  ? isSignUp
+                    ? 'Creating Account...'
+                    : 'Signing In...'
+                  : isSignUp
+                    ? 'Create Account'
+                    : 'Sign In'
+              }
+            </Button>
           </form>
 
           <div className="mt-6 text-center">
@@ -252,10 +261,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onToggle }) => {
                 disabled={loading}
                 className="ml-1 text-purple-600 hover:text-purple-500 font-medium transition-colors"
               >
-                {/* {isSignUp ? 'Sign In' : 'Sign Up'} */}
-                {
-                  loading ? isSignUp ? 'Signing In...' : 'Signing Up...' : isSignUp ? 'Sign In' : 'Sign Up'
-                }
+                {isSignUp ? 'Sign In' : 'Sign Up'}
+
               </button>
             </p>
           </div>
