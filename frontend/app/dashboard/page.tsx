@@ -4,6 +4,11 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { Toaster } from '@/components/ui/sonner';
+import useAuth from '../hooks/useAuth';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { Download, X } from 'lucide-react';
+import Link from 'next/link';
 
 interface Paper {
   _id: string;
@@ -22,7 +27,8 @@ const DashboardPage = () => {
   const [selectedSubject, setSelectedSubject] = useState('');
   const [filteredPapers, setFilteredPapers] = useState<Paper[]>([]);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
+  const router = useRouter();
+  const { user, loading } = useAuth();
   useEffect(() => {
     fetchPapers();
   }, []);
@@ -50,6 +56,16 @@ const DashboardPage = () => {
       setFilteredPapers([]);
     }
   }, [selectedCourse]);
+
+  useEffect(() => {
+    if (!user && !loading) {
+      router.push("/login");
+    }
+  }, [user, loading])
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   useEffect(() => {
     if (selectedCourse && selectedSubject) {
@@ -95,11 +111,11 @@ const DashboardPage = () => {
           <div className="relative bg-white p-4 rounded shadow-lg">
             <button
               onClick={() => setPreviewUrl(null)}
-              className="absolute top-2 right-2 text-red-500 font-bold"
+              className="absolute top-2 right-2 text-red-500 font-bold hover:text-red-600"
             >
-              ✕
+              <X className="w-6 h-6" />
             </button>
-            <img src={previewUrl} alt="Preview" className="max-h-[80vh] max-w-[90vw]" />
+            <Image src={previewUrl} alt="Preview" className="max-h-[80vh] max-w-[90vw]" width={1000} height={1000} />
           </div>
         </div>
       )}
@@ -142,25 +158,32 @@ const DashboardPage = () => {
             <h2 className="text-xl font-semibold mb-3">Available Papers:</h2>
             <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
               {filteredPapers.map(paper => (
-                <div key={paper._id} className="border border-gray-300 rounded-lg p-4 shadow bg-white">
-                  <h3 className="text-lg font-bold mb-1">{paper.title}</h3>
+                <div
+                  key={paper._id}
+                  className="border border-gray-300 rounded-lg p-4 shadow bg-white space-y-3 flex flex-col justify-evenly"
+                >
+                  <h3 className="text-lg font-bold">{paper.title}</h3>
                   <p className="text-sm text-gray-600">Subject: {paper.subject}</p>
                   <p className="text-sm text-gray-600">Course: {paper.course.join(", ")}</p>
                   <p className="text-sm text-gray-600">Year: {paper.year}</p>
 
-                  <div className="flex gap-4 mt-3">
-                    <button
-                      onClick={() => setPreviewUrl(paper.fileUrl)}
-                      className="text-sm bg-gray-200 hover:bg-gray-300 text-black px-3 py-1 rounded"
+
+                  <img
+                    src={paper.fileUrl}
+                    alt={paper.title}
+                    className="w-full max-h-64 object-contain border rounded"
+                  />
+                  <div className='bg-gradient-primary hover:opacity-90flex justify-center items-center'>
+                    <Link
+                      href={paper.fileUrl}
+                      download
+                      className=" mt-2  text-white px-4 py-1 rounded text-sm"
                     >
-                      View
-                    </button>
-                    <button
-                      onClick={() => handleDownload(paper.fileUrl, paper.title)}
-                      className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
-                    >
-                      Download
-                    </button>
+                      <span className='flex items-center justify-center'>
+                        <Download className="w-4 h-4 mr-2" />
+                        Download
+                      </span>
+                    </Link>
                   </div>
                 </div>
               ))}

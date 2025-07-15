@@ -6,6 +6,15 @@ import { uploadImageToCloudinary } from "../utils/imageUpload";
 const createPaper = async (req: Request, res: Response) => {
     try {
         console.log("authenticated ...");
+        if(Buffer.isBuffer(req.body)){
+            console.log("req.body is a buffer");
+            req.body = JSON.parse(req.body.toString("utf-8"));
+            console.log("req.body", req.body);
+        }else if(typeof req.body === "string"){
+            console.log("req.body is a string");
+            req.body = JSON.parse(req.body);
+            console.log("req.body", req.body);
+        }
         const body = {
             ...req.body,
             course: JSON.parse(req.body.course),
@@ -98,6 +107,15 @@ const deletePaper = async (req: Request, res: Response) => {
 
 const updatePaper = async (req: Request, res: Response) => {
     try {
+        if(Buffer.isBuffer(req.body)){
+            console.log("req.body is a buffer");
+            req.body = JSON.parse(req.body.toString("utf-8"));
+            console.log("req.body", req.body);
+        }else if(typeof req.body === "string"){
+            console.log("req.body is a string");
+            req.body = JSON.parse(req.body);
+            console.log("req.body", req.body);
+        }
         const { id } = req.params;
         if (!id) {
             res.status(400).json({ success: false, message: "id is required" });

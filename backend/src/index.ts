@@ -2,6 +2,7 @@ import express from "express";
 import { config } from "dotenv";
 import cors from "cors";
 import connectDB from "./config/db";
+import serverless from 'serverless-http';
 import { authRouter } from "./routes/auth";
 import { paperRouter } from "./routes/paper";
 config();
@@ -21,7 +22,9 @@ app.get("/", (req, res) => {
   res.send("backend is saying hii!!");
 });
 
-app.listen(PORT, () => {
-  console.log("App is listening to", PORT);
-});
+// app.listen(PORT, () => {
+//   console.log("App is listening to", PORT);
+// });
+
+export const handler = serverless(app);
 

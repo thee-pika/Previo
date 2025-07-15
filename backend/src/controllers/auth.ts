@@ -9,6 +9,16 @@ export const authRouter = express();
 
 const login = async (req: Request, res: Response) => {
     try {
+        console.log("bodt", req.body);
+        if(Buffer.isBuffer(req.body)){
+            console.log("req.body is a buffer");
+            req.body = JSON.parse(req.body.toString("utf-8"));
+            console.log("req.body", req.body);
+        }else if(typeof req.body === "string"){
+            console.log("req.body is a string");
+            req.body = JSON.parse(req.body);
+            console.log("req.body", req.body);
+        }
         const parsedData = await LoginSchema.safeParse(req.body);
 
         if (!parsedData.success) {
@@ -65,9 +75,22 @@ const login = async (req: Request, res: Response) => {
 
 const signup = async (req: Request, res: Response) => {
     try {
+        console.log("bodt", req.body);
+
+        if(Buffer.isBuffer(req.body)){
+            console.log("req.body is a buffer");
+            req.body = JSON.parse(req.body.toString("utf-8"));
+            console.log("req.body", req.body);
+        }else if(typeof req.body === "string"){
+            console.log("req.body is a string");
+            req.body = JSON.parse(req.body);
+            console.log("req.body", req.body);
+        }
+        console.log("req.body is nota  buffer or string", req.body);
         const parsedData = await RegisterSchema.safeParse(req.body);
 
         if (!parsedData.success) {
+            console.log("parsedData", parsedData);
             res
                 .status(400)
                 .json({ success: false, message: "validation Failed!!", error: parsedData.error });

@@ -23,6 +23,8 @@ const Header = () => {
     }, 1000);
   };
 
+  console.log("user", user);
+
   return (
     <header className="bg-white/90 backdrop-blur-xl border-b border-border/50 sticky top-0 z-50 shadow-sm">
       <div className="container mx-auto px-4 py-4">
@@ -45,19 +47,23 @@ const Header = () => {
               Features
             </Link>
             <Link
-              href="#about"
+              href="/about"
               className="text-muted-foreground hover:text-primary transition-colors font-medium"
             >
               About
             </Link>
-            <Link href="/upload">
-              <Button
-                variant="ghost"
-                className="text-muted-foreground hover:text-primary transition-colors font-medium"
-              >
-                Upload
-              </Button>
-            </Link>
+            {
+              user?.role === "admin" && (
+                <Link href="/upload">
+                  <Button
+                    variant="ghost"
+                    className="text-muted-foreground hover:text-primary transition-colors font-medium"
+                  >
+                    Upload
+                  </Button>
+                </Link>
+              )
+            }
           </nav>
 
           <div className="flex items-center space-x-4">
@@ -76,6 +82,7 @@ const Header = () => {
                 Logout
               </Button>
             )}
+
             {user && <p className="text-muted-foreground">{`hey, ${user?.name}`}</p>}
 
             <Button
@@ -89,7 +96,6 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="mt-4 md:hidden flex flex-col space-y-3">
             <Link
@@ -106,14 +112,19 @@ const Header = () => {
             >
               About
             </Link>
-            <Link href="/upload" onClick={() => setMobileMenuOpen(false)}>
-              <Button
-                variant="ghost"
-                className="text-muted-foreground hover:text-primary transition-colors font-medium"
-              >
-                Upload
-              </Button>
-            </Link>
+            <div>
+              user?.role === "admin" && (
+              <Link href="/upload" onClick={() => setMobileMenuOpen(false)}>
+                <Button
+                  variant="ghost"
+                  className="text-muted-foreground hover:text-primary transition-colors font-medium"
+                >
+                  Upload
+                </Button>
+              </Link>
+              )
+            </div>
+
             {user ? (
               <Button
                 variant="ghost"
@@ -141,3 +152,4 @@ const Header = () => {
 };
 
 export default Header;
+
