@@ -5,32 +5,23 @@ import { uploadImageToCloudinary } from "../utils/imageUpload";
 
 const createPaper = async (req: Request, res: Response) => {
     try {
-        console.log("authenticated ...");
         if(Buffer.isBuffer(req.body)){
-            console.log("req.body is a buffer");
             req.body = JSON.parse(req.body.toString("utf-8"));
-            console.log("req.body", req.body);
         }else if(typeof req.body === "string"){
-            console.log("req.body is a string");
             req.body = JSON.parse(req.body);
-            console.log("req.body", req.body);
         }
+
         const body = {
             ...req.body,
             course: JSON.parse(req.body.course),
         };
         const parsedData = await PaperSchema.safeParse(body);
 
-        console.log("req.file req.filereq.filereq.filereq.filereq.file", req.file);
-
         if (!parsedData.success) {
-            console.log("parsedData.error parsedData.errorparsedData.errorparsedData.errorparsedData.error", parsedData.error);
-            console.log("parsedData error ", parsedData.data);
-            res.status(400).json({ message: "validation Failed!!", error: parsedData.error });
+            res.status(400).json({ message: "All fields are required", error: parsedData.error });
             return;
         }
 
-        console.log("parsedData.data", parsedData);
         if (!req.file) {
             res.status(400).json({
                 error: "Avatar is required",
@@ -41,7 +32,6 @@ const createPaper = async (req: Request, res: Response) => {
 
         const result = await uploadImageToCloudinary(req.file.buffer);
 
-        console.log("result resultresultresultresultresultresultresult", result);
         const { url, id } = JSON.parse(result);
         if (!result) {
             res.status(400).json({
@@ -52,7 +42,6 @@ const createPaper = async (req: Request, res: Response) => {
         }
 
         const paper = await Paper.create({ ...parsedData.data, fileUrl: url, fileId: id, year: parseInt(parsedData.data.year), semester: parseInt(parsedData.data.semester) });
-        console.log("paper", paper);
         res.json({ success: true, message: "paper created successfully", paper });
     } catch (error) {
         res.status(500).json({ success: false, message: "error occured", error });

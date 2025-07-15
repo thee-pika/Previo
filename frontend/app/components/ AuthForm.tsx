@@ -21,6 +21,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onToggle }) => {
   const { accessToken, login } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,7 +36,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onToggle }) => {
     });
   };
 
-  console.log("process.env.NEXT_PUBLIC_BACKEND_URI", process.env.NEXT_PUBLIC_BACKEND_URI);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSignUp) {
@@ -48,6 +48,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onToggle }) => {
 
   const handleLogin = async () => {
     try {
+      setLoading(true);
       const data = {
         email: formData.email,
         password: formData.password,
@@ -68,14 +69,18 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onToggle }) => {
       else {
         toast.error(res.data.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log("error", error);
-      toast.error("Something went wrong");
+      console.log("error.response.data.message", error.response.data.message);
+      toast.error(error.response.data.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   }
 
   const handleSignup = async () => {
     try {
+      setLoading(true);
       const data = {
         name: formData.name,
         email: formData.email,
@@ -99,6 +104,8 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onToggle }) => {
     } catch (error) {
       console.log("error", error);
       toast.error("Something went wrong");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -242,9 +249,13 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onToggle }) => {
               {isSignUp ? 'Already have an account?' : "Don't have an account?"}
               <button
                 onClick={onToggle}
+                disabled={loading}
                 className="ml-1 text-purple-600 hover:text-purple-500 font-medium transition-colors"
               >
-                {isSignUp ? 'Sign In' : 'Sign Up'}
+                {/* {isSignUp ? 'Sign In' : 'Sign Up'} */}
+                {
+                  loading ? isSignUp ? 'Signing In...' : 'Signing Up...' : isSignUp ? 'Sign In' : 'Sign Up'
+                }
               </button>
             </p>
           </div>

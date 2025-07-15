@@ -9,20 +9,16 @@ export const authRouter = express();
 
 const login = async (req: Request, res: Response) => {
     try {
-        console.log("bodt", req.body);
         if(Buffer.isBuffer(req.body)){
-            console.log("req.body is a buffer");
             req.body = JSON.parse(req.body.toString("utf-8"));
-            console.log("req.body", req.body);
         }else if(typeof req.body === "string"){
-            console.log("req.body is a string");
             req.body = JSON.parse(req.body);
-            console.log("req.body", req.body);
         }
+
         const parsedData = await LoginSchema.safeParse(req.body);
 
         if (!parsedData.success) {
-            res.status(400).json({ message: "validation Failed!!" });
+            res.status(400).json({ success: false, message: "All fields are required" });
             return;
         }
 
@@ -31,7 +27,7 @@ const login = async (req: Request, res: Response) => {
         });
 
         if (!userExists) {
-            res.status(400).json({ message: "Invalid credentials" });
+            res.status(400).json({ success: false, message: "Invalid credentials" });
             return;
         }
 
@@ -41,9 +37,10 @@ const login = async (req: Request, res: Response) => {
         );
 
         if (!hashedPassword) {
-            res.status(400).json({ message: "Invalid credentials" });
+            res.status(400).json({ success: false, message: "Invalid credentials" });
             return;
         }
+
         const userObject: UserT = {
             _id: userExists._id.toString(),
             name: userExists.name,
@@ -75,7 +72,7 @@ const login = async (req: Request, res: Response) => {
 
 const signup = async (req: Request, res: Response) => {
     try {
-        console.log("bodt", req.body);
+      
 
         if(Buffer.isBuffer(req.body)){
             console.log("req.body is a buffer");
@@ -86,7 +83,8 @@ const signup = async (req: Request, res: Response) => {
             req.body = JSON.parse(req.body);
             console.log("req.body", req.body);
         }
-        console.log("req.body is nota  buffer or string", req.body);
+
+
         const parsedData = await RegisterSchema.safeParse(req.body);
 
         if (!parsedData.success) {
@@ -94,6 +92,15 @@ const signup = async (req: Request, res: Response) => {
             res
                 .status(400)
                 .json({ success: false, message: "validation Failed!!", error: parsedData.error });
+            return;
+        }
+
+        const userExists = await User.findOne({
+            email: parsedData.data.email,
+        });
+
+        if (userExists) {
+            res.status(400).json({ success: false, message: "User already exists" });
             return;
         }
 
