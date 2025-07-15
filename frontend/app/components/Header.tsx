@@ -113,7 +113,7 @@ const Header = () => {
               About
             </Link>
             <div>
-              user?.role === "admin" && (
+              {user?.role === "admin" && (
               <Link href="/upload" onClick={() => setMobileMenuOpen(false)}>
                 <Button
                   variant="ghost"
@@ -122,7 +122,7 @@ const Header = () => {
                   Upload
                 </Button>
               </Link>
-              )
+              )}
             </div>
 
             {user ? (

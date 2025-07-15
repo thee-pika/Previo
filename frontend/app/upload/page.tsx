@@ -34,7 +34,7 @@ export default function PyqUploadForm() {
             console.log("user not found", user);
             router.push("/login");
         }
-    }, [user]);
+    }, [user, router]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         console.log("e", e.target);

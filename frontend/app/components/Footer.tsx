@@ -1,5 +1,5 @@
 
-import { BookOpen, Facebook, Twitter, Instagram, Mail, Github, Linkedin } from "lucide-react";
+import { BookOpen, Facebook, Twitter, Instagram, Github, Linkedin } from "lucide-react";
 
 const Footer = () => {
   return (

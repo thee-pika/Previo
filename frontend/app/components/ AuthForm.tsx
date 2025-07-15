@@ -69,6 +69,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onToggle }) => {
         toast.error(res.data.message);
       }
     } catch (error) {
+      console.log("error", error);
       toast.error("Something went wrong");
     }
   }
@@ -96,6 +97,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onToggle }) => {
         toast.error(res.data.message);
       }
     } catch (error) {
+      console.log("error", error);
       toast.error("Something went wrong");
     }
   }

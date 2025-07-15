@@ -14,7 +14,7 @@ export default function AboutPage() {
 
                 <p className="text-md mb-4">
                     Our goal is to help students prepare smarter by providing a structured, searchable,
-                    and up-to-date archive of academic question papers. Whether you're revising for finals or
+                    and up-to-date archive of academic question papers. Whether you&apos;re revising for finals or
                     practicing for internal exams, PyqPapers makes it easier to find what you need, quickly.
                 </p>
 

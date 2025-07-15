@@ -1,9 +1,9 @@
 'use client';
 
-import { ReactNode, useState } from 'react';
+import {useState } from 'react';
 import AuthForm from './ AuthForm';
 
-export default function AuthLayout({ children }: { children: ReactNode }) {
+export default function AuthLayout() {
   const [isSignUp, setIsSignUp] = useState(false);
 
   const toggleAuthMode = () => {

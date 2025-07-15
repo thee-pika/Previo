@@ -55,17 +55,14 @@ const DashboardPage = () => {
       setSelectedSubject("");
       setFilteredPapers([]);
     }
-  }, [selectedCourse]);
+  }, [selectedCourse, papers]);
 
   useEffect(() => {
     if (!user && !loading) {
       router.push("/login");
     }
-  }, [user, loading])
+  }, [user, loading,router])
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   useEffect(() => {
     if (selectedCourse && selectedSubject) {
@@ -75,7 +72,11 @@ const DashboardPage = () => {
       );
       setFilteredPapers(filtered);
     }
-  }, [selectedSubject]);
+  }, [selectedSubject, papers, selectedCourse]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   const handleDownload = async (fileUrl: string, fileName: string) => {
     try {
@@ -87,7 +88,7 @@ const DashboardPage = () => {
 
       const blob = await response.blob();
       const contentType = response.headers.get("content-type");
-      let extension = contentType?.includes("pdf") ? ".pdf" : '';
+      const extension = contentType?.includes("pdf") ? ".pdf" : '';
 
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -100,6 +101,7 @@ const DashboardPage = () => {
       window.URL.revokeObjectURL(url);
       toast.success(`File downloaded successfully`);
     } catch (error) {
+      console.log("error", error);
       toast.error("Error downloading file.");
     }
   };
@@ -167,10 +169,11 @@ const DashboardPage = () => {
                   <p className="text-sm text-gray-600">Course: {paper.course.join(", ")}</p>
                   <p className="text-sm text-gray-600">Year: {paper.year}</p>
 
-
-                  <img
+                  <Image
                     src={paper.fileUrl}
                     alt={paper.title}
+                    width={1000}
+                    height={1000}
                     className="w-full max-h-64 object-contain border rounded"
                   />
                   <div className='bg-gradient-primary hover:opacity-90flex justify-center items-center'>
